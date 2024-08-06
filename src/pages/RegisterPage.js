@@ -9,6 +9,7 @@ import Link from "../components/Link";
 import GoogleImage from "../assets/google.svg";
 import styles from "./RegisterPage.module.css";
 import { useToaster } from "../contexts/ToasterProvider";
+import { useAuth } from "../contexts/AuthProvider";
 
 function RegisterPage() {
   const [values, setValues] = useState({
@@ -19,6 +20,7 @@ function RegisterPage() {
   });
   const navigate = useNavigate();
   const toast = useToaster();
+  const { login } = useAuth;
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -43,11 +45,13 @@ function RegisterPage() {
      * 회원 생성이 성공하면 로그인을 시도한다
      * 로그인이 성공하면 `/me`로 이동한다
      */
-    axios.post("/users", {
+    await axios.post("/users", {
       name,
       email,
       password,
     });
+    await login({ email, password });
+    navigate("/me");
   }
 
   return (
